@@ -12,7 +12,7 @@ function SwapRequests({ wishlist }) {
 
   // Get swap requests from MongoDB
   useEffect(() => {
-    fetch("http://localhost:5000/api/swap-requests", {
+    fetch("https://clothswap-53da.onrender.com/api/swap-requests", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -53,7 +53,7 @@ function SwapRequests({ wishlist }) {
   async function updateStatus(id, status) {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/swap-requests/${id}`,
+        `https://clothswap-53da.onrender.com/api/swap-requests/${id}`,
         {
           method: "PUT",
           headers: {

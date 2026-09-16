@@ -12,7 +12,7 @@ function BrowseItems({addToWishlist, wishlist }) {
     useEffect(() => {
         setLoading(true);
 
-        fetch("http://localhost:5000/api/items")
+        fetch("https://clothswap-53da.onrender.com/api/items")
             .then((response) => response.json())
             .then((data) => {
                 setItems(data);

@@ -21,7 +21,7 @@ function SwapRequestModal({ item, onClose }) {
       setIsLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/swap-requests",
+        "https://clothswap-53da.onrender.com/api/swap-requests",
         {
           method: "POST",
           headers: {

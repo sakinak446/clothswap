@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/items")
+    fetch("https://clothswap-53da.onrender.com/api/items")
         .then((response) => response.json())
         .then((data) => {
             setItems(data);
@@ -49,7 +49,7 @@ function App() {
     return;
   }
 
-  fetch("http://localhost:5000/api/wishlist", {
+  fetch("https://clothswap-53da.onrender.com/api/wishlist", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -89,7 +89,7 @@ function App() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/wishlist", {
+      const response = await fetch("https://clothswap-53da.onrender.com/api/wishlist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,7 +128,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/wishlist/${id}`,
+        `https://clothswap-53da.onrender.com/api/wishlist/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -163,7 +163,7 @@ function App() {
   async function updateItem(updatedItem) {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/items/${updatedItem._id}`,
+        `https://clothswap-53da.onrender.com/api/items/${updatedItem._id}`,
         {
           method: "PUT",
           headers: {
@@ -214,7 +214,7 @@ function App() {
   }
   async function deleteItem(id) {
     try {
-      const response = await fetch(`http://localhost:5000/api/items/${id}`, {
+      const response = await fetch(`https://clothswap-53da.onrender.com/api/items/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`

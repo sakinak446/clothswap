@@ -40,7 +40,7 @@ function AddItem({wishlist, addNewItem }){
         const token = localStorage.getItem("token");
 
         try {
-            const response = await fetch("http://localhost:5000/api/items", {
+            const response = await fetch("https://clothswap-53da.onrender.com/api/items", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
