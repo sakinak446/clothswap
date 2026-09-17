@@ -60,6 +60,17 @@ function ItemForm({formData, handleChange, handleSubmit, buttonText}){
                     required/>
                 </div>
 
+                <div className="form-group">
+                    <label>Item Image</label>
+                    <input
+                        type="file"
+                        name="image"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handleChange}
+                    />
+                    <small>Upload a JPG, PNG, or WebP image.</small>
+                </div>
+
                 <button type="submit" className="add-item-btn edit-submit-btn">{buttonText}</button>
             </form>
         </>

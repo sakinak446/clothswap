@@ -10,6 +10,18 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
+const { v2: cloudinary } = require("cloudinary");
+const multer = require("multer");
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+const upload = multer({
+  storage: multer.memoryStorage(),
+});
+
 const Item = require("./models/items");
 const SwapRequest = require("./models/SwapRequest");
 const Wishlist = require("./models/Wishlist");
@@ -181,7 +193,45 @@ mongoose
   .catch((error) => {
     console.error("MongoDB connection failed:", error);
   });
+  
+app.post("/api/upload-image", verifyToken, upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        message: "No image file provided",
+      });
+    }
 
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "clothswap",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+
+      stream.end(req.file.buffer);
+    });
+
+    res.status(200).json({
+      imageUrl: result.secure_url,
+    });
+  } catch (error) {
+    console.error("Cloudinary upload error:", error);
+
+    res.status(500).json({
+      message: "Image upload failed",
+      error: error.message,
+    });
+  }
+});
 app.get("/api/items", async (req, res) => {
     try {
         const items = await Item.find();

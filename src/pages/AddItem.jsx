@@ -15,14 +15,15 @@ function AddItem({wishlist, addNewItem }){
         condition:"",
         brand:"",
         description:"",
+        image: null,
     });
 
     function handleChange(event){
-        const {name, value} = event.target;
+        const {name, value, files} = event.target;
 
         setFormData({
             ...formData,
-            [name] : value,
+            [name]: name === "image" ? files[0] : value,
         });
     }
 
@@ -40,14 +41,57 @@ function AddItem({wishlist, addNewItem }){
         const token = localStorage.getItem("token");
 
         try {
-            const response = await fetch("https://clothswap-53da.onrender.com/api/items", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(formData)
-            });
+            let imageUrl = "";
+
+            if (formData.image) {
+                const imageData = new FormData();
+                imageData.append("image", formData.image);
+
+                const uploadResponse = await fetch(
+                    "https://clothswap-53da.onrender.com/api/upload-image",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: imageData
+                    }
+                );
+
+                const uploadData = await uploadResponse.json();
+
+                if (!uploadResponse.ok) {
+                    throw new Error(uploadData.message || "Image upload failed");
+                }
+
+                imageUrl = uploadData.imageUrl;
+            }
+
+            // Send item details + Cloudinary image URL to our backend
+            const itemData = {
+                title: formData.title,
+                category: formData.category,
+                size: formData.size,
+                condition: formData.condition,
+                brand: formData.brand,
+                description: formData.description,
+            };
+
+            if (imageUrl) {
+                itemData.image = imageUrl;
+            }
+
+            const response = await fetch(
+                "https://clothswap-53da.onrender.com/api/items",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(itemData)
+                }
+            );
 
             if (!response.ok) {
                 const errorData = await response.json();
@@ -63,20 +107,20 @@ function AddItem({wishlist, addNewItem }){
                 }
 
                 throw new Error(errorData.message || "Failed to add item");
-                }
+            }
 
             const newItem = await response.json();
 
             console.log("Item added:", newItem);
 
             addNewItem(newItem);
-            
+
             navigate("/browse");
 
         } catch (error) {
             console.error("Error adding item:", error);
             alert(error.message || "Failed to add item");
-            }
+        }
     }
     return(
         <>
